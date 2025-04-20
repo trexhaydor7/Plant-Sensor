@@ -1,0 +1,67 @@
+ 
+ //DHT library
+ #include "DHT.h"
+
+//Sensor Pins
+#define DHTPIN 4
+#define DHTTYPE DHT11
+#define sensorPower 7 
+#define sensorPin A0
+
+//Creates DHT object
+DHT dht = DHT(DHTPIN, DHTTYPE);
+
+//Value for water level
+int waterLevel = 0; 
+
+void setup()
+{
+  //Establishs baud rate
+  Serial.begin(9600);
+  //Starts DHT sensors
+  dht.begin();  
+  //Set D7 as an OUTPUT
+  pinMode(sensorPower,OUTPUT);    
+  //Defaults water level sensor to off in beginning
+  digitalWrite(sensorPower,LOW);
+}
+void loop()
+{
+  //Read humidity from DHT sensor
+  float humidity = dht.readHumidity();
+  //Read temperature in fahrenheit from DHT sensor
+  float fahrenheit = dht.readTemperature(true);
+
+  //Print and format humidity and temperature readings from DHT sensor
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.print(" ");
+  Serial.print("Temperature: ");
+  Serial.print(fahrenheit);
+  Serial.print(" ");
+
+  //assigns and prints water level
+  int level = readWaterSensor();
+  Serial.print(" Water level: ");
+  Serial.print(level);
+  Serial.print(" ");
+  Serial.println("");
+  
+  //Wait 1000 milliseconds
+  delay(1000);
+}
+
+//Method to get the reading of the sensor
+int readWaterSensor()
+{
+  //Turn on water level sensor
+  digitalWrite(sensorPower,HIGH);
+  //Wait 10 miliseconds
+  delay(10);
+  //Read the analog value from water level sensor
+  waterLevel = analogRead(sensorPin);
+  //Turn off water level sensor
+  digitalWrite(sensorPower,LOW);
+  //Return water level
+  return waterLevel;
+}
