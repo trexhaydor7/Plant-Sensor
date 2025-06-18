@@ -1,2 +1,2 @@
-# Plant-Sensor-
+# Plant-Sensor
 A documentation of plant sensor business
